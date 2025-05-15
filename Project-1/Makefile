@@ -3,7 +3,7 @@
 CXXFILES = $(wildcard *.cpp)
 PROGRAMS = $(CXXFILES:.cpp=)
 
-DATA_PATH ?= "\"/home/faculty/shreiner/public_html/CS-351/Project-1/Data\""
+DATA_PATH ?= "\"/home/tragen/Temp/Data\""
 DEFINES = -DDATA_PATH=$(DATA_PATH)
 
 OPT ?= -g

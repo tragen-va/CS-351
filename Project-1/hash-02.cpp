@@ -1,4 +1,3 @@
-
 #include <fstream>
 
 const char* path = DATA_PATH "/Data.bin";

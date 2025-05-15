@@ -1,0 +1,145 @@
+hash-00
+-----------------
+123.94 real	120.89 user	3.03 sys	3600 memory (KB)
+121.51 real	118.30 user	3.19 sys	3348 memory (KB)
+
+
+hash-01
+-----------------
+6.83 real	5.92 user	0.90 sys	3484 memory (KB)
+4.77 real	3.88 user	0.87 sys	3776 memory (KB)
+
+
+
+hash-02
+-----------------
+7.40 real	6.52 user	0.86 sys	3612 memory (KB)
+4.74 real	3.84 user	0.89 sys	3612 memory (KB)
+
+
+
+hash-03
+-------------------
+5.91 real	5.06 user	0.84 sys	3484 memory (KB)
+4.73 real	3.82 user	0.89 sys	3476 memory (KB)
+
+
+
+hash-04
+----------------
+6.31 real	5.95 user	0.35 sys	5012572 memory (KB)
+5.61 real	3.90 user	1.69 sys	5012476 memory (KB)
+
+
+
+
+Program   | Optimization | Real (s) | User (s) | Sys (s) | Mem (KB) | Throughput (MH/s) | Speedup
+----------|--------------|----------|----------|---------|----------|--------------------|---------
+hash-00   | -g           | 122.73   | 119.60   | 3.11    | 3474     | 8.15               | 1.00
+hash-01   | -g           | 6.83     | 5.92     | 0.90    | 3484     | 146.42             | 17.97
+hash-02   | -g           | 7.40     | 6.52     | 0.86    | 3612     | 135.14             | 16.11
+hash-03   | -g           | 5.91     | 5.06     | 0.84    | 3484     | 169.20             | 20.80
+hash-04   | -g           | 6.31     | 5.95     | 0.35    | 5012572  | 158.47             | 19.34
+hash-00   | -O2          | 121.51   | 118.30   | 3.19    | 3348     | 8.23               | 1.00
+hash-01   | -O2          | 4.77     | 3.88     | 0.87    | 3776     | 209.64             | 25.47
+hash-02   | -O2          | 4.74     | 3.84     | 0.89    | 3612     | 210.97             | 25.63
+hash-03   | -O2          | 4.73     | 3.82     | 0.89    | 3476     | 211.39             | 25.68
+hash-04   | -O2          | 5.61     | 3.90     | 1.69    | 5012476  | 178.25             | 21.64
+
+
+
+
+1) It is probably so slow because of these lines 
+
+            input >> byte;
+            hash += (multiplier * byte) ^ (hash >> 23);
+
+they read in the values manually 1 at a time and convert. This is very repetative and ineficient.
+
+
+2) There is not much difference between the 2. hash-01 uses new while hash-02 uses alloc. Alloc is generlaly going to be slightly faster, whihc is shown by that fact hash-02 finished first. However they both took about 4.7 second so at this input size the gap is just within margin of error. 
+
+3) Depends on your definition of appreciable. Hash-03 does consistantly finish before before hash-01 or hash-02, but by a very small margin, especailly with optimazation applied. The difference is neglagable. 
+
+4) Hash-04 uses map() to map the entier input file into the processes area of memory, thus taking up alot more memory than reading it peice by piece. 
+
+
+5)
+ 
+
+
+
+
+
+
+
+
+
+PROJECT-2
+
+first
+-----------------
+|Thread<br>Count|Wall Clock<br>Time|User Time|System Time|Speedup|
+|:--:|--:|--:|--:|:--:|
+|1|19.36|14.01| 2.55|1.00|
+|2| 7.93|14.63| 0.54| 2.44|
+|3| 5.63|15.09| 0.73| 3.44|
+|4| 4.61|16.08| 0.72| 4.20|
+|5| 3.74|15.69| 0.91| 5.18|
+|6| 3.22|15.68| 0.98| 6.01|
+|7| 3.08|17.46| 0.99| 6.29|
+|8| 2.91|18.02| 1.34| 6.65|
+|16| 1.98|18.56| 2.98| 9.78|
+|24| 1.83|18.79| 7.06|10.58|
+|32| 1.83|18.76|14.74|10.58|
+|40| 1.85|18.05|23.22|10.46|
+|48| 1.83|17.48|34.28|10.58|
+|56| 1.87|17.48|36.37|10.35|
+|64| 1.89|17.16|41.77|10.24|
+|72| 1.87|17.19|39.88|10.35|
+|80| 1.88|17.53|33.48|10.30|
+
+
+
+main program 0.00797487 s
+results output 4.7e-07 s
+main program 2.536468347 s
+main program 2.537372657 s
+
+
+The serial portion of my program was:
+
+$$ s = \frac{0.00797534}{2.537372657} \approx 0.00314 $$
+
+So the parallel portion is:
+
+$$ p = 1 - s = 1 - 0.00314 = 0.99686 $$
+
+Using Amdahl’s Law with 16 threads:
+
+$$ \text{speedup} = \frac{1}{1 - p + \frac{p}{n}} = \frac{1}{1 - 0.99686 + \frac{0.99686}{16}} = \frac{1}{0.06544} \approx 15.28 $$
+
+
+
+
+
+
+
+
+
+
+Using rise over run from 1 to 7 threads:
+
+$$
+\text{slope} = \frac{6.29 - 1.00}{7 - 1} = \frac{5.29}{6} \approx 0.882
+$$
+
+So the speedup increases by about 0.88x for each added thread in that range, indicating a nearly linear trend initially.
+
+However, this linear trend **does not continue** as we increase thread count. For example, with 64 threads, we only get a speedup of about 10.24 — far below the linear prediction of ~56.
+
+This flattening occurs due to:
+- The serial portion of the program (Amdahl’s Law),
+- Increased overhead from thread management and synchronization,
+- Resource contention (e.g., memory, locks),
+- And insufficient workload per thread at high counts.
