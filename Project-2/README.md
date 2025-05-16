@@ -1,4 +1,4 @@
-Original Output
+## Original Output
 
 |Thread<br>Count|Wall Clock<br>Time|User Time|System Time|Speedup|
 |:--:|--:|--:|--:|:--:|
@@ -23,7 +23,7 @@ Original Output
 
 
 
-Graph of Speedup Times
+## Graph of Speedup Times
 
 ![Alternate description text](Project2.png)
 
@@ -36,7 +36,7 @@ Graph of Speedup Times
 
 
 
-Second Output
+## Second Part Output
 
 main program 0.00797487 s
 results output 4.7e-07 s
@@ -45,6 +45,8 @@ main program 2.537372657 s
 
 
 
+
+## Amdahl’s Estimate
 
 
 The serial portion of my program was:
@@ -66,6 +68,10 @@ $$ \text{speedup} = \frac{1}{1 - p + \frac{p}{n}} = \frac{1}{1 - 0.99686 + \frac
 
 
 
+## Question
+
+Q: In reviewing the graph of speed-ups to number of threads, note that we get pretty linear (when you plot the dots, they’re pretty close to being a line) speed-up. What’s the slope of that line? (Pick two values, like for one and seven threads, and do the rise-over-run thing you learned in Algebra). Does that linear trend continue as we add more threads? What do you think causes the curve to “flatten out” when we use large thread counts?
+
 
 
 Using rise over run from 1 to 7 threads:
@@ -79,8 +85,7 @@ So the speedup increases by about 0.88x for each added thread in that range, ind
 However, this linear trend **does not continue** as we increase thread count. For example, with 64 threads, we only get a speedup of about 10.24 — far below the linear prediction of ~56.
 
 This flattening occurs due to:
-- The serial portion of the program (Amdahl’s Law),
-- Increased overhead from thread management and synchronization,
-- Resource contention (e.g., memory, locks),
-- And insufficient workload per thread at high counts.
+- The serial portion of the program,
+- Increased overhead from thread management,
+- real threads being used up
 

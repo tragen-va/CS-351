@@ -1,5 +1,6 @@
-[My triangle](triangle.html)
+## WebGl Rendered Shapes
 
+[My triangle](triangle.html)
 
 [My Disk](disk.html)
 
